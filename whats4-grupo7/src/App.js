@@ -7,10 +7,10 @@ import styled from 'styled-components'
 
 const Container = styled.div`
    
-    width:100vw;
+    width:50vw;
     height:400px;
     background-color:pink;
-      
+    margin:0 auto;  
     
     `
   class App extends React.Component {
@@ -41,3 +41,5 @@ const Container = styled.div`
   
 
     export default App;
+
+//enchanting-lock.surge.sh
