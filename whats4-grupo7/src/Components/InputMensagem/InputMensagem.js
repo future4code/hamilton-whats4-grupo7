@@ -3,30 +3,34 @@ import styled from 'styled-components'
 
 
 const ContainerInputMensagem = styled.div`
-    background-color: yellow;
-    height:100%;
-    width:100%;
+  background-color: yellow;
+  height:100%;
+  width:100%;
 `
 
 const DivCaixaMensagem = styled.div`
-    background-image:url(https://i.pinimg.com/originals/85/70/f6/8570f6339d3189c96e340d47a581d3b8.jpg);
-    height: 400px;
-    border: 4px solid black;
-
+  background-image:url(https://i.pinimg.com/originals/85/70/f6/8570f6339d3189c96e340d47a581d3b8.jpg);
+  height: 400px;
+  border: 4px solid black;
 `
 
 const Mensagem = styled.div`
-    display:flex;
-    margin-left: 15px;
-    
+  display:flex;
+  margin-left: 15px;
+`
+const MensagemEu = styled.div`
+  display:flex;
+  margin-left: 15px;
+  justify-content: flex-end;
 `
 
 const DivDoInput = styled.div`
-    height: 100px;
-    background-color:#128c7e ;
-    display: flex;
-    justify-content:center;
-    align-items:center;
+  height: 100px;
+  background-color:#128c7e ;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
 `
 
 class InputMensagem extends React.Component {
@@ -47,78 +51,71 @@ class InputMensagem extends React.Component {
   }
 
   adicionaMensagem = (event) => {
-    const novaMensagem = {
-      nome: this.state.valorInputNome, texto: this.state.valorInputTexto
-    }
 
-    const auxiliar = [
-      ...this.state.arrayPessoas, novaMensagem
-    ];
+    if (event.key === "Enter" || event === "botao"){
 
-    this.setState({ arrayPessoas: auxiliar });
-  }
+      const novaMensagem = {
+        nome: this.state.valorInputNome, 
+        texto: this.state.valorInputTexto
+      }
 
+      const auxiliar = [ ...this.state.arrayPessoas, novaMensagem];
 
-  adicionaMensagemOnKey = (event) => {
-
-    if (event.key==="Enter"){
-
-    const novaMensagem = {
-      nome: this.state.valorInputNome, texto: this.state.valorInputTexto
-    }
-
-    const auxiliar = [
-      ...this.state.arrayPessoas, novaMensagem
-    ];
-
-    this.setState({ arrayPessoas: auxiliar });
+      this.setState({ arrayPessoas: auxiliar , valorInputNome: "", valorInputTexto: ""});
     }
 
   }
-
 
   onChangeInputNome = event => { this.setState({ valorInputNome: event.target.value }) };
 
   onChangeInputTexto = event => { this.setState({ valorInputTexto: event.target.value }) };
 
-
   onDoubleClick = (key) => {
     if (window.confirm('Tem certeza que deseja deletar essa mensagem?')) {
     
-    const removeMensagemAuxiliar = this.state.arrayPessoas.filter((elemento,index)=>{
-    return index!== key})
+      const removeMensagemAuxiliar = this.state.arrayPessoas.filter((elemento,index)=>{
+      return index!== key})
 
-    this.setState({arrayPessoas: removeMensagemAuxiliar})
+      this.setState({arrayPessoas: removeMensagemAuxiliar})
     
     }
   }
 
 
-  render() {
+  inserePost = ( )=>{ 
+    
     const inserePost = this.state.arrayPessoas.map((elemento, index) => {
       
-        if(elemento.nome!=="" && elemento.texto!==""){
+      if(elemento.nome!=="" && elemento.texto!==""){
+          if(elemento.nome==="Eu"){
+            return (
+              <MensagemEu key={index} onDoubleClick={()=>this.onDoubleClick(index)}>
+                <strong>{elemento.nome}: </strong> {elemento.texto}
+              </MensagemEu>)
+          }else{
             return (
               <Mensagem key={index} onDoubleClick={()=>this.onDoubleClick(index)}>
                 <strong>{elemento.nome}: </strong> {elemento.texto}
               </Mensagem>)
-          }
-       }
-    )
+            }
+      }
+    }); 
+   return inserePost;
+  }
+
+  render() {
 
     return (
       <ContainerInputMensagem>
 
         <DivCaixaMensagem>
-          {inserePost}
+          <this.inserePost/>
         </DivCaixaMensagem>
 
         <DivDoInput>
-          <div>
-            <input onKeyDown={this.adicionaMensagemOnKey} onChange={this.onChangeInputNome} placeholder={'Nome'} value={this.state.valorInputNome} />
-            <input onKeyDown={this.adicionaMensagemOnKey} onChange={this.onChangeInputTexto} placeholder={'Texto'} value={this.state.valorInputTexto} />
-            <button onClick={this.adicionaMensagem}>Adicionar</button>
-          </div>
+            <input onKeyDown={this.adicionaMensagem} onChange={this.onChangeInputNome} placeholder={'Nome'} value={this.state.valorInputNome} />
+            <input onKeyDown={this.adicionaMensagem} onChange={this.onChangeInputTexto} placeholder={'Texto'} value={this.state.valorInputTexto} />
+            <button onClick={()=>this.adicionaMensagem("botao")}>Adicionar</button>
         </DivDoInput>
 
       </ContainerInputMensagem>
