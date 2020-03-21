@@ -24,11 +24,10 @@ const Mensagem = styled.div`
 const DivDoInput = styled.div`
     height: 100px;
     background-color:#128c7e ;
-    display:flex;
+    display: flex;
     justify-content:center;
     align-items:center;
 `
-
 
 class InputMensagem extends React.Component {
   constructor(props) {
@@ -40,16 +39,14 @@ class InputMensagem extends React.Component {
         {
           nome: "",
           texto: "",
-
         }
       ],
       valorInputNome: "",
       valorInputTexto: ""
     }
-
   }
 
-  adicionaMensagem = () => {
+  adicionaMensagem = (event) => {
     const novaMensagem = {
       nome: this.state.valorInputNome, texto: this.state.valorInputTexto
     }
@@ -59,55 +56,74 @@ class InputMensagem extends React.Component {
     ];
 
     this.setState({ arrayPessoas: auxiliar });
+  }
+
+
+  adicionaMensagemOnKey = (event) => {
+
+    if (event.key==="Enter"){
+
+    const novaMensagem = {
+      nome: this.state.valorInputNome, texto: this.state.valorInputTexto
+    }
+
+    const auxiliar = [
+      ...this.state.arrayPessoas, novaMensagem
+    ];
+
+    this.setState({ arrayPessoas: auxiliar });
+    }
 
   }
+
 
   onChangeInputNome = event => { this.setState({ valorInputNome: event.target.value }) };
 
   onChangeInputTexto = event => { this.setState({ valorInputTexto: event.target.value }) };
 
 
-  render() {
+  onDoubleClick = (key) => {
+    if (window.confirm('Tem certeza que deseja deletar essa mensagem?')) {
+    
+    const removeMensagemAuxiliar = this.state.arrayPessoas.filter((elemento,index)=>{
+    return index!== key})
 
+    this.setState({arrayPessoas: removeMensagemAuxiliar})
+    
+    }
+  }
+
+
+  render() {
     const inserePost = this.state.arrayPessoas.map((elemento, index) => {
       
         if(elemento.nome!=="" && elemento.texto!==""){
-
-    return (
-        <Mensagem>
-          <p><strong>{elemento.nome}:</strong> {elemento.texto}</p>
-        </Mensagem>)
-      }
-
-      
-    })
-
-
-
+            return (
+              <Mensagem key={index} onDoubleClick={()=>this.onDoubleClick(index)}>
+                <strong>{elemento.nome}: </strong> {elemento.texto}
+              </Mensagem>)
+          }
+       }
+    )
 
     return (
       <ContainerInputMensagem>
 
         <DivCaixaMensagem>
-
           {inserePost}
-
         </DivCaixaMensagem>
-
-
-
 
         <DivDoInput>
           <div>
-            <input onChange={this.onChangeInputNome} placeholder={'Nome'} value={this.state.valorInputNome} />
-            <input onChange={this.onChangeInputTexto} placeholder={'Texto'} value={this.state.valorInputTexto} />
+            <input onKeyDown={this.adicionaMensagemOnKey} onChange={this.onChangeInputNome} placeholder={'Nome'} value={this.state.valorInputNome} />
+            <input onKeyDown={this.adicionaMensagemOnKey} onChange={this.onChangeInputTexto} placeholder={'Texto'} value={this.state.valorInputTexto} />
             <button onClick={this.adicionaMensagem}>Adicionar</button>
           </div>
         </DivDoInput>
+
       </ContainerInputMensagem>
     );
   }
 }
 
-
-export default InputMensagem 
+export default InputMensagem;
